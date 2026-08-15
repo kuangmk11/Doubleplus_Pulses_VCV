@@ -1,7 +1,36 @@
+# --- Claude Code: machine-local settings ---
+# Shared project config (.claude/settings.json) is fine to commit. The *.local.json
+# files hold per-machine permission grants and absolute filesystem paths.
+.claude/settings.local.json
+.claude/*.local.json
+
+# --- VCV Rack build output ---
 /build
 /dist
 /plugin.so
 /plugin.dylib
 /plugin.dll
+*.vcvplugin
+
+# --- VCV Rack SDK, if unpacked in-tree ---
+/Rack-SDK/
+/rack-sdk.zip
+
+# --- Python tooling ---
 __pycache__/
 *.pyc
+
+# --- editors ---
+.history/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS / filesystem junk ---
+.DS_Store
+._*
+Thumbs.db
+ehthumbs.db
+desktop.ini
