@@ -60,6 +60,15 @@ Then, because it is a Turing Machine underneath, the loop-length and randomness
 controls act on the whole thing at once: lock the register and you have a repeating
 riff, open it a crack and the melody mutates while staying inside its scale.
 
+**Leave "Gate outputs with clock" on.** That default is the board's behaviour, not a
+departure from it. The hardware never reads the ribbon's CLOCK pin because it does
+not have to — the Turing Machine's expander bus already carries each bit ANDed with
+the clock, so the bits arrive as pulses and the merge just preserves their width.
+This port rebuilds the register from BIT1 instead of taking that bus, so it has to
+re-apply the gating itself, and that switch is what does it. An AND true on three
+consecutive steps then pings the quantizer three times, once per step, exactly as
+the board would.
+
 **Things to reach for:**
 
 - **B in AND with two or three channels** is the sweet spot for note changes. AND of
