@@ -31,6 +31,48 @@ period, so those slivers register and — because the register holds each bit un
 the next clock — the outputs come out as **full-width gates** that actually trigger
 downstream modules.
 
+## Using it
+
+The thing worth understanding is that the two buses are **two independent reads of
+the same register**. Every pattern either one produces is built from the same eight
+bits, on the same loop, so they can never drift apart — but pick a different subset
+for each, or put one in AND and the other in OR, and they come out at different
+densities. Related, not identical. That is where most of the musical mileage is.
+
+### Gates on A, note changes on B
+
+The patch this module turned out to be best at, and not one it was designed for:
+
+1. **OUT A → your envelope / VCA gate.** Route a few channels to Bus A in **OR** —
+   a busy, rhythmic gate stream.
+2. **OUT B → a quantizer's trigger / sample input**, with the Turing Machine's CV
+   output going into that quantizer's CV input. Route a *different*, smaller set of
+   channels to Bus B, in **AND** for something sparser still.
+
+The quantizer only samples when Bus B fires, so the note is **held** across every
+gate that Bus A produces in between. You get a melody that changes on its own
+sparser rhythm while the gates keep articulating underneath it — and because both
+rhythms are subsets of one shift register, the note changes always land on beats the
+gate pattern already emphasises. It reads as a phrase rather than as two things
+running at once.
+
+Then, because it is a Turing Machine underneath, the loop-length and randomness
+controls act on the whole thing at once: lock the register and you have a repeating
+riff, open it a crack and the melody mutates while staying inside its scale.
+
+**Things to reach for:**
+
+- **B in AND with two or three channels** is the sweet spot for note changes. AND of
+  several bits fires rarely, which is exactly what you want for a melody that moves
+  every few bars instead of every step.
+- **Swap which bus is which** for the inverse feel — sparse stabs with a fast-moving
+  pitch underneath.
+- **MUTE on B** freezes the pitch without touching the gate pattern, so you can drop
+  the melody in and out live from the panel. That is what the centre position is for.
+- Note that an **AND bus with nothing routed to it sits high** rather than pulsing
+  (the hardware quirk this port keeps), so it will not ping anything. Route at least
+  one channel to a bus you want triggers from.
+
 ## Panel
 
 Drawn to the same house style as the hardware — **PANEL_STYLE v1.04**, kept with
