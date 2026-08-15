@@ -1,7 +1,7 @@
 # Pulses Plus — VCV Rack module
 
 A software port of the hardware **Pulses Plus** gate router for the Music Thing
-Turing Machine (see the [design write-up](https://github.com/kuangmk11/pulses_plus_submin/blob/main/docs/pulses-plus-design.md)
+Turing Machine (see the [design write-up](https://github.com/kuangmk11/Doubleplus_Pulses/blob/main/docs/pulses-plus-design.md)
 for the circuit it emulates). Eight pulse channels, each routed to one of two
 merge buses; each bus computes OR **or** AND of whatever is routed to it, chosen
 live.
@@ -106,7 +106,7 @@ The vertical bus-mode toggles use the stock `BefacoSwitch` directly.
 
 ## Related repositories
 
-- **[pulses_plus_submin](https://github.com/kuangmk11/pulses_plus_submin)** — the hardware this
+- **[Doubleplus_Pulses](https://github.com/kuangmk11/Doubleplus_Pulses)** — the hardware this
   ports: KiCad schematic, PCB, panel, BOM, gerbers and the full design write-up.
 - **[Turing-Pulse-Expander](https://github.com/kuangmk11/Turing-Pulse-Expander)** — the archive:
   Tom Whitwell's original Rev 2 expander, plus the superseded studies the design grew out of.
