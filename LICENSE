@@ -1,0 +1,41 @@
+Pulses Plus — VCV Rack module
+Copyright (C) 2026 Missing Mile Modular
+
+SPDX-License-Identifier: GPL-3.0-or-later
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
+
+--------------------------------------------------------------------------------
+
+NOTE: This file states the licence but does not reproduce its full legal text.
+Before submitting to the VCV Rack plugin library, replace this file with the
+verbatim GPL-3.0 text from https://www.gnu.org/licenses/gpl-3.0.txt
+
+--------------------------------------------------------------------------------
+
+Why this differs from the hardware
+
+The Pulses Plus *hardware* design is licensed CC BY-NC-SA 4.0. This software port
+is GPL-3.0-or-later instead, because the VCV Rack plugin library does not accept
+NonCommercial terms. The two licences cover two different works; neither
+constrains the other.
+
+Third-party material
+
+res/BefacoSwitchHoriz_*.svg are derived from the stock BefacoSwitch component
+graphics in the VCV Rack component library (rotated 90 degrees by
+res-src/rotate_befaco.py), and remain under the VCV Rack component library's own
+terms.
+
+Panel label glyphs are outlines of the DejaVu fonts, which are distributed under
+the DejaVu Fonts Licence (a permissive, Bitstream Vera-derived licence).

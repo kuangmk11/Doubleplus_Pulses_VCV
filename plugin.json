@@ -6,15 +6,15 @@
   "brand": "Turing Pulse Expander",
   "author": "kuangmk11",
   "authorEmail": "kuangmk11@gmail.com",
-  "authorUrl": "https://github.com/kuangmk11/Turing-Pulse-Expander",
-  "pluginUrl": "https://github.com/kuangmk11/Turing-Pulse-Expander",
-  "sourceUrl": "https://github.com/kuangmk11/Turing-Pulse-Expander",
+  "authorUrl": "https://github.com/kuangmk11",
+  "pluginUrl": "https://github.com/kuangmk11/pulses_plus_vcvrack",
+  "sourceUrl": "https://github.com/kuangmk11/pulses_plus_vcvrack",
   "modules": [
     {
       "slug": "PulsesPlus",
       "name": "Pulses Plus",
       "description": "Performance gate router for the Music Thing Turing Machine: eight channels, each routed to one of two OR/AND merge buses.",
-      "manualUrl": "https://github.com/kuangmk11/Turing-Pulse-Expander",
+      "manualUrl": "https://github.com/kuangmk11/pulses_plus_vcvrack#readme",
       "tags": ["Logic", "Utility", "Expander", "Polyphonic"]
     }
   ]

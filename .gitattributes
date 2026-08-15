@@ -1,0 +1,12 @@
+# Normalise text to LF in the repo, checkout native.
+* text=auto eol=lf
+
+# Genuinely binary — never touch the bytes.
+*.zip binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.so binary
+*.dll binary
+*.dylib binary
+*.vcvplugin binary
