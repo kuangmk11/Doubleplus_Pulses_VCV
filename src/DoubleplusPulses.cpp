@@ -1,10 +1,11 @@
 #include "plugin.hpp"
 
-// Pulses Plus — a VCV Rack port of the hardware Turing Machine gate router.
+// Doubleplus Pulses — a VCV Rack port of the hardware ++PULSES gate router for
+// the Music Thing Turing Machine, by Missing Mile Modular.
 //
 // Eight pulse channels, each routed by a 3-position toggle to Bus A, off, or
 // Bus B. Each bus continuously computes both the OR and the AND of whatever is
-// routed to it; a per-bus mode toggle (OR / MUTE / AND) picks which one reaches
+// routed to it; a per-bus mode toggle (AND up / MUTE / OR down) picks which one reaches
 // the output.
 //
 // Input front end: VCV's Turing Machine (Stellare Modular) exposes its shift
@@ -26,15 +27,18 @@ static const int ROUTE_A = 0;    // left  → Bus A
 static const int ROUTE_OFF = 1;  // centre → off
 static const int ROUTE_B = 2;    // right → Bus B
 
-static const int MODE_OR = 2;    // up
+// Bus mode toggle (vertical Befaco: value 0 = down throw, 2 = up).
+// AND is up, matching the corrected hardware panel — the prototype had the
+// switch the other way round and the panel was fixed, not the wiring.
+static const int MODE_AND = 2;   // up
 static const int MODE_MUTE = 1;  // centre
-static const int MODE_AND = 0;   // down
+static const int MODE_OR = 0;    // down
 
 static const float GATE_HIGH = 10.f;
 static const float THRESH_HI = 1.0f;  // Schmitt-style thresholds on the inputs
 static const float THRESH_LO = 0.2f;
 
-struct PulsesPlus : Module {
+struct DoubleplusPulses : Module {
 	enum ParamId {
 		ENUMS(ROUTE_PARAM, 8),
 		MODE_A_PARAM,
@@ -65,14 +69,15 @@ struct PulsesPlus : Module {
 	bool andEmptyHigh = true;   // AND of zero routed channels is high (hardware behaviour)
 	bool gateWithClock = true;  // pass outputs only while CLOCK is high (stock Pulses behaviour)
 
-	PulsesPlus() {
+	DoubleplusPulses() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 		for (int i = 0; i < 8; i++) {
 			configSwitch(ROUTE_PARAM + i, 0.f, 2.f, ROUTE_OFF,
 				string::f("Channel %d route", i + 1), {"Bus A", "Off", "Bus B"});
 		}
-		configSwitch(MODE_A_PARAM, 0.f, 2.f, MODE_OR, "Bus A mode", {"AND", "Mute", "OR"});
-		configSwitch(MODE_B_PARAM, 0.f, 2.f, MODE_OR, "Bus B mode", {"AND", "Mute", "OR"});
+		// Label list is indexed by value: 0 = down = OR, 2 = up = AND.
+		configSwitch(MODE_A_PARAM, 0.f, 2.f, MODE_OR, "Bus A mode", {"OR", "Mute", "AND"});
+		configSwitch(MODE_B_PARAM, 0.f, 2.f, MODE_OR, "Bus B mode", {"OR", "Mute", "AND"});
 		configInput(CLOCK_INPUT, "Clock (chain from the TM clock)");
 		configInput(BIT_INPUT, "Bit (TM stage-1 / Pulses BIT1)");
 		configOutput(OUTA_OUTPUT, "Bus A");
@@ -183,8 +188,8 @@ struct BefacoSwitchHoriz : app::SvgSwitch {
 // Layout in millimetres — MUST match res-src/gen_panel.py.
 static const float W_MM = 8 * 5.08f;
 static const float CX = W_MM / 2;
-static const float COL_L = CX - 12.28f;   // 8.04 — left toggle column
-static const float COL_R = CX + 12.28f;   // 32.60 — right toggle column
+static const float COL_L = CX - 10.5f;    // 9.82 — left toggle column
+static const float COL_R = CX + 10.5f;    // 30.82 — right toggle column
 static const float CH_ROW0 = 16.5f;
 static const float CH_PITCH = 7.2f;
 static const float CH_LED_RISE = 2.5f;    // channel LED rides above its toggle row
@@ -193,10 +198,10 @@ static const float BUS_LED_Y = 88.0f;
 static const float BUS_SW_Y = 97.5f;
 static const float OUT_Y = 109.0f;
 
-struct PulsesPlusWidget : ModuleWidget {
-	PulsesPlusWidget(PulsesPlus* module) {
+struct DoubleplusPulsesWidget : ModuleWidget {
+	DoubleplusPulsesWidget(DoubleplusPulses* module) {
 		setModule(module);
-		setPanel(createPanel(asset::plugin(pluginInstance, "res/PulsesPlus.svg")));
+		setPanel(createPanel(asset::plugin(pluginInstance, "res/DoubleplusPulses.svg")));
 
 		addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
 		addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
@@ -208,33 +213,33 @@ struct PulsesPlusWidget : ModuleWidget {
 		for (int i = 0; i < 8; i++) {
 			float y = CH_ROW0 + i * CH_PITCH;
 			float sx = (i % 2 == 0) ? COL_L : COL_R;
-			addParam(createParamCentered<BefacoSwitchHoriz>(mm2px(Vec(sx, y)), module, PulsesPlus::ROUTE_PARAM + i));
-			addChild(createLightCentered<MediumLight<YellowLight>>(mm2px(Vec(CX, y - CH_LED_RISE)), module, PulsesPlus::CH_LIGHT + i));
+			addParam(createParamCentered<BefacoSwitchHoriz>(mm2px(Vec(sx, y)), module, DoubleplusPulses::ROUTE_PARAM + i));
+			addChild(createLightCentered<MediumLight<YellowLight>>(mm2px(Vec(CX, y - CH_LED_RISE)), module, DoubleplusPulses::CH_LIGHT + i));
 		}
 
 		// CLOCK + BIT inputs (feed the local shift register)
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(CX - 6.5f, IN_Y)), module, PulsesPlus::CLOCK_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(CX + 6.5f, IN_Y)), module, PulsesPlus::BIT_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(CX - 6.5f, IN_Y)), module, DoubleplusPulses::CLOCK_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(CX + 6.5f, IN_Y)), module, DoubleplusPulses::BIT_INPUT));
 
 		// bus mode toggles (vertical Befaco: OR up / MUTE centre / AND down)
-		addParam(createParamCentered<BefacoSwitch>(mm2px(Vec(COL_L, BUS_SW_Y)), module, PulsesPlus::MODE_A_PARAM));
-		addParam(createParamCentered<BefacoSwitch>(mm2px(Vec(COL_R, BUS_SW_Y)), module, PulsesPlus::MODE_B_PARAM));
+		addParam(createParamCentered<BefacoSwitch>(mm2px(Vec(COL_L, BUS_SW_Y)), module, DoubleplusPulses::MODE_A_PARAM));
+		addParam(createParamCentered<BefacoSwitch>(mm2px(Vec(COL_R, BUS_SW_Y)), module, DoubleplusPulses::MODE_B_PARAM));
 
 		// bus output LEDs
-		addChild(createLightCentered<MediumLight<GreenLight>>(mm2px(Vec(COL_L, BUS_LED_Y)), module, PulsesPlus::OUTA_LIGHT));
-		addChild(createLightCentered<MediumLight<GreenLight>>(mm2px(Vec(COL_R, BUS_LED_Y)), module, PulsesPlus::OUTB_LIGHT));
+		addChild(createLightCentered<MediumLight<GreenLight>>(mm2px(Vec(COL_L, BUS_LED_Y)), module, DoubleplusPulses::OUTA_LIGHT));
+		addChild(createLightCentered<MediumLight<GreenLight>>(mm2px(Vec(COL_R, BUS_LED_Y)), module, DoubleplusPulses::OUTB_LIGHT));
 
 		// bus outputs
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(COL_L, OUT_Y)), module, PulsesPlus::OUTA_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(COL_R, OUT_Y)), module, PulsesPlus::OUTB_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(COL_L, OUT_Y)), module, DoubleplusPulses::OUTA_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(COL_R, OUT_Y)), module, DoubleplusPulses::OUTB_OUTPUT));
 	}
 
 	void appendContextMenu(Menu* menu) override {
-		PulsesPlus* module = getModule<PulsesPlus>();
+		DoubleplusPulses* module = getModule<DoubleplusPulses>();
 		menu->addChild(new MenuSeparator);
 		menu->addChild(createBoolPtrMenuItem("Gate outputs with clock", "", &module->gateWithClock));
 		menu->addChild(createBoolPtrMenuItem("AND of empty bus is high", "", &module->andEmptyHigh));
 	}
 };
 
-Model* modelPulsesPlus = createModel<PulsesPlus, PulsesPlusWidget>("PulsesPlus");
+Model* modelDoubleplusPulses = createModel<DoubleplusPulses, DoubleplusPulsesWidget>("DoubleplusPulses");

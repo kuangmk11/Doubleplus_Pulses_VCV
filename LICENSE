@@ -1,4 +1,4 @@
-Pulses Plus — VCV Rack module
+Doubleplus Pulses — VCV Rack module
 Copyright (C) 2026 Missing Mile Modular
 
 SPDX-License-Identifier: GPL-3.0-or-later
@@ -25,7 +25,7 @@ verbatim GPL-3.0 text from https://www.gnu.org/licenses/gpl-3.0.txt
 
 Why this differs from the hardware
 
-The Pulses Plus *hardware* design is licensed CC BY-NC-SA 4.0. This software port
+The ++PULSES *hardware* design is licensed CC BY-NC-SA 4.0. This software port
 is GPL-3.0-or-later instead, because the VCV Rack plugin library does not accept
 NonCommercial terms. The two licences cover two different works; neither
 constrains the other.

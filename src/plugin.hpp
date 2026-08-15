@@ -5,4 +5,4 @@ using namespace rack;
 
 extern Plugin* pluginInstance;
 
-extern Model* modelPulsesPlus;
+extern Model* modelDoubleplusPulses;
